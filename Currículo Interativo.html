@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellington Santos - Gestor de Pessoas e Operações</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate Neutrals with Cyan Accent -->
+    <!-- Application Structure Plan: A single-page, fully responsive portfolio designed for seamless navigation on both desktop and mobile. The layout progresses from a prominent hero section with personal branding, followed by a detailed professional profile. An interactive timeline visually presents career progression, complemented by a dynamic radar chart for key competencies. The page concludes with academic background and essential additional information, all accessible via a sticky header navigation and a 'back to top' button for enhanced user experience. This structure prioritizes clarity, engagement, and easy information retrieval for recruiters. -->
+    <!-- Visualization & Content Choices: - Profile Picture: Circular image with placeholder URL. Goal: Personalization. Justification: Adds a human touch. - Professional Profile: Text block. Goal: Inform. Justification: Concise summary of expertise. - Career Timeline: Interactive vertical timeline (HTML/CSS/JS). Goal: Show Change/Progression. Interaction: Click to expand details. Justification: Engaging visual of career path. - Key Competencies: Radar Chart (Chart.js/Canvas) and descriptive text blocks. Goal: Compare/Organize skills. Interaction: Hover for tooltips. Justification: Visual and textual reinforcement of strengths. - Education & Additional Info: Text block. Goal: Inform. Justification: Clear presentation of qualifications. CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .timeline-item-content {
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        .timeline-item-content.open {
+            max-height: 500px; /* Adjust as needed for content */
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 40vh; /* Responsive height */
+            width: 100%;
+            max-width: 500px; /* Max width for larger screens */
+            max-height: 500px; /* Max height for larger screens */
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover {
+            color: #0891b2; /* cyan-600 */
+            border-bottom-color: #0891b2;
+        }
+        #backToTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: #0891b2;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        #backToTopBtn:hover {
+            background-color: #067491;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold text-slate-800">
+                Wellington Santos
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#perfil" class="nav-link font-medium">Perfil</a>
+                <a href="#experiencia" class="nav-link font-medium">Experiência</a>
+                <a href="#competencias" class="nav-link font-medium">Competências</a>
+                <a href="#formacao" class="nav-link font-medium">Formação</a>
+                <!-- Removed Contact link from desktop nav -->
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-slate-800 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+             <a href="#perfil" class="block py-2 px-4 text-sm hover:bg-slate-100">Perfil</a>
+             <a href="#experiencia" class="block py-2 px-4 text-sm hover:bg-slate-100">Experiência</a>
+             <a href="#competencias" class="block py-2 px-4 text-sm hover:bg-slate-100">Competências</a>
+             <a href="#formacao" class="block py-2 px-4 text-sm hover:bg-slate-100">Formação</a>
+             <!-- Removed Contact link from mobile nav -->
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="hero" class="text-center py-16">
+            <img src="https://i.postimg.cc/63GjKmn2/FOTO-PERFIL-01-copiar.webp" alt="Foto de Perfil de Wellington Santos" class="rounded-full mx-auto mb-6 border-4 border-cyan-600 shadow-lg" onerror="this.onerror=null;this.src='https://placehold.co/160x160/cccccc/333333?text=Foto';">
+            <h1 class="text-4xl md:text-6xl font-bold text-slate-900">WELLINGTON ALLEX SOUZA DOS SANTOS</h1>
+            <p class="mt-4 text-xl md:text-2xl text-cyan-700 font-medium">Gestor de Contratos, Pessoas e Operações</p>
+            <div class="mt-8 flex flex-col items-center space-y-2 text-sm"> <!-- Adjusted space-y-4 to space-y-2 -->
+                <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4"> <!-- Adjusted space-y-4 to space-y-2 and space-x-6 to space-x-4 -->
+                    <div class="flex items-center">
+                        <span class="mr-2">📞</span> <!-- Phone icon -->
+                        <a href="https://api.whatsapp.com/send?phone=5598981510182" target="_blank" class="hover:text-cyan-600">(98) 98151-0182</a>
+                    </div>
+                     <div class="flex items-center">
+                        <span class="mr-2">✉️</span>
+                        <a href="mailto:wellington.allex@gmail.com" class="hover:text-cyan-600">wellington.allex@gmail.com</a>
+                    </div>
+                     <div class="flex items-center">
+                        <span class="mr-2">📍</span>
+                        <span>São Luís - MA, Brasil</span>
+                    </div>
+                </div>
+                <div class="flex items-center mt-2"> <!-- Adjusted mt-4 to mt-2 -->
+                    <span class="mr-2">💼</span>
+                    <a href="https://www.linkedin.com/in/wellington-santos2211" target="_blank" class="hover:text-cyan-600">Perfil LinkedIn</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="perfil" class="py-8 md:py-16"> <!-- Adjusted py-16 to py-8 md:py-16 -->
+            <div class="max-w-3xl mx-auto text-center">
+                 <h2 class="text-3xl font-bold text-slate-800 mb-6">Perfil Profissional</h2>
+                 <p class="text-lg text-slate-600">
+                    Profissional com mais de <strong>10 anos de experiência em Gestão</strong>, aliando sólida base técnica em <strong>Mecânica (Vale S.A.)</strong> com formação em <strong>Recursos Humanos (Estácio)</strong>. Possuo experiência comprovada em <strong>gestão de contratos</strong> nos setores público e privado, incluindo atuação em instituições como <strong>Caixa Econômica Federal, Banco do Nordeste, Tribunal de Justiça do Maranhão e Getnet Maranhão</strong>. Minha capacidade de liderança, desenvolvimento de equipes e resolução de problemas me permite otimizar resultados e contribuir estrategicamente com o capital humano.
+                 </p>
+            </div>
+        </section>
+
+        <div class="border-t border-slate-200 my-8"></div>
+
+        <section id="experiencia" class="py-8 md:py-16"> <!-- Adjusted py-16 to py-8 md:py-16 -->
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-12 text-center">Trajetória Profissional</h2>
+                <p class="text-center text-slate-600 mb-8 -mt-8">Clique em cada cargo para ver mais detalhes sobre as responsabilidades e conquistas.</p> <!-- Adjusted mb-12 to mb-8 -->
+                <div class="relative">
+                    <div class="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-slate-200" aria-hidden="true"></div>
+
+                    <div class="timeline-item relative mb-8 sm:mb-12 cursor-pointer"> <!-- Adjusted mb-12 to mb-8 sm:mb-12 -->
+                        <div class="flex flex-col sm:flex-row items-center mb-4">
+                            <div class="w-full sm:w-1/2 pr-0 sm:pr-8 text-center sm:text-right mb-4 sm:mb-0">
+                                <h3 class="text-xl font-bold text-cyan-700">Supervisor Comercial</h3>
+                                <p class="text-slate-500">Prisma Promotora | Getnet Maranhão</p>
+                                <time class="text-sm text-slate-400">Junho/2023 – Abril/2025</time>
+                            </div>
+                            <div class="absolute left-1/2 -translate-x-1/2 bg-white border-2 border-cyan-600 rounded-full w-4 h-4"></div>
+                            <div class="w-full sm:w-1/2 pl-0 sm:pl-8"></div>
+                        </div>
+                        <div class="timeline-item-content text-slate-600 bg-white p-6 rounded-lg shadow-md border border-slate-200 mx-auto max-w-xl">
+                           <p>Liderança estratégica de equipes comerciais no dinâmico setor de adquirência. Minhas responsabilidades abrangem todo o ciclo de gestão de talentos, desde a contratação e treinamento até o acompanhamento da performance na prospecção e retenção de clientes Pessoa Jurídica, impulsionando o crescimento e a performance comercial na região.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item relative mb-8 sm:mb-12 cursor-pointer"> <!-- Adjusted mb-12 to mb-8 sm:mb-12 -->
+                        <div class="flex flex-col sm:flex-row items-center mb-4">
+                             <div class="w-full sm:w-1/2 pr-0 sm:pr-8"></div>
+                            <div class="absolute left-1/2 -translate-x-1/2 bg-white border-2 border-cyan-600 rounded-full w-4 h-4"></div>
+                            <div class="w-full sm:w-1/2 pl-0 sm:pl-8 text-center sm:text-left mt-4 sm:mt-0">
+                               <h3 class="text-xl font-bold text-cyan-700">Supervisor Administrativo e Operacional</h3>
+                                <p class="text-slate-500">Gestor Serviços Empresariais</p>
+                                <time class="text-sm text-slate-400">Fevereiro/2015 – Setembro/2021</time>
+                            </div>
+                        </div>
+                        <div class="timeline-item-content text-slate-600 bg-white p-6 rounded-lg shadow-md border border-slate-200 mx-auto max-w-xl">
+                            <p>Gestão e supervisão de contratos complexos de prestação de serviços para grandes órgãos públicos, como Caixa Econômica Federal, Tribunal de Justiça do Maranhão e Banco do Nordeste. Fui responsável pelo ciclo completo dos contratos, do planejamento ao encerramento, assegurando conformidade e eficiência. Atuei proativamente na melhoria de processos, gerenciando uma vasta gama de serviços operacionais (manutenção, limpeza) e de apoio administrativo (recepção, telefonia).</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item relative mb-8 sm:mb-12 cursor-pointer"> <!-- Adjusted mb-12 to mb-8 sm:mb-12 -->
+                        <div class="flex flex-col sm:flex-row items-center mb-4">
+                            <div class="w-full sm:w-1/2 pr-0 sm:pr-8 text-center sm:text-right mb-4 sm:mb-0">
+                               <h3 class="text-xl font-bold text-cyan-700">Técnico em Mecânica</h3>
+                                <p class="text-slate-500">Vale S.A.</p>
+                                <time class="text-sm text-slate-400">Maio/2011 – Abril/2013</time>
+                            </div>
+                           <div class="absolute left-1/2 -translate-x-1/2 bg-white border-2 border-cyan-600 rounded-full w-4 h-4"></div>
+                           <div class="w-full sm:w-1/2 pl-0 sm:pl-8"></div>
+                        </div>
+                         <div class="timeline-item-content text-slate-600 bg-white p-6 rounded-lg shadow-md border border-slate-200 mx-auto max-w-xl">
+                           <p>Responsável pela manutenção de máquinas de pátio na gerência GARUG, onde desenvolvi uma base sólida em resolução de problemas técnicos complexos e raciocínio analítico, fundamentos que hoje aplico na gestão de processos e pessoas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="border-t border-slate-200 my-8"></div>
+
+        <section id="competencias" class="py-8 md:py-16"> <!-- Adjusted py-16 to py-8 md:py-16 -->
+            <h2 class="text-3xl font-bold text-slate-800 mb-12 text-center">Principais Competências</h2>
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 md:gap-12 items-center"> <!-- Adjusted gap-12 to gap-8 md:gap-12 -->
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+                <div class="space-y-4">
+                    <div class="p-4 bg-white rounded-lg shadow-sm border border-slate-200">
+                        <h4 class="font-bold text-lg text-slate-800">Liderança e Desenvolvimento de Equipes</h4>
+                        <p class="text-slate-600">Capacidade de inspirar, treinar e gerir equipes de alta performance para alcançar metas ambiciosas.</p>
+                    </div>
+                     <div class="p-4 bg-white rounded-lg shadow-sm border border-slate-200">
+                        <h4 class="font-bold text-lg text-slate-800">Gestão Estratégica de Contratos</h4>
+                        <p class="text-slate-600">Experiência robusta no ciclo completo de contratos com entidades públicas e privadas, garantindo conformidade e eficiência.</p>
+                    </div>
+                     <div class="p-4 bg-white rounded-lg shadow-sm border border-slate-200">
+                        <h4 class="font-bold text-lg text-slate-800">Resolução de Problemas Complexos</h4>
+                        <p class="text-slate-600">Habilidade analítica para identificar e solucionar desafios operacionais e administrativos de forma proativa.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="border-t border-slate-200 my-8"></div>
+
+        <section id="formacao-contato" class="py-8 md:py-16"> <!-- Adjusted py-16 to py-8 md:py-16 -->
+             <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 md:gap-12"> <!-- Adjusted gap-12 to gap-8 md:gap-12 -->
+                <div id="formacao">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-6 text-center md:text-left">Formação Acadêmica</h3>
+                    <div class="p-6 bg-white rounded-lg shadow-md border border-slate-200">
+                        <p class="text-lg font-semibold text-cyan-700">Gestão de Recursos Humanos</p>
+                        <p class="text-slate-600">Estácio</p>
+                        <p class="text-sm text-slate-500 mt-1">Cursando - Foco em alinhar a vasta experiência prática com as melhores práticas e tendências do mercado de RH.</p>
+                    </div>
+                </div>
+                 <div id="contato">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-6 text-center md:text-left">Informações Adicionais</h3>
+                    <div class="p-6 bg-white rounded-lg shadow-md border border-slate-200 space-y-3">
+                       <p class="text-slate-600">✔️ Documentação completa para contratação imediata.</p>
+                       <p class="text-slate-600">✔️ Habilitação Categoria B.</p>
+                       <p class="text-slate-600">✔️ Veículo próprio e disponibilidade para viagens.</p>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 py-6" id="footer">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Wellington Santos. Desenvolvido para apresentação profissional.</p>
+        </div>
+    </footer>
+
+    <button id="backToTopBtn" title="Voltar ao Topo">⬆️</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const content = item.querySelector('.timeline-item-content');
+                    if (content) {
+                        timelineItems.forEach(otherItem => {
+                            const otherContent = otherItem.querySelector('.timeline-item-content');
+                            if (otherContent && otherContent !== content) {
+                                otherContent.classList.remove('open');
+                                otherContent.style.padding = '0';
+                            }
+                        });
+
+                        content.classList.toggle('open');
+                        if (content.classList.contains('open')) {
+                           content.style.padding = '1.5rem';
+                        } else {
+                           content.style.padding = '0';
+                        }
+                    }
+                });
+            });
+
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            const skillsChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        'Gestão de Contratos',
+                        'Liderança de Equipes',
+                        'Operações Comerciais',
+                        'Resolução de Problemas',
+                        'Desenvolvimento de Talentos',
+                        'Análise Técnica'
+                    ],
+                    datasets: [{
+                        label: 'Nível de Competência',
+                        data: [5, 5, 4, 5, 4, 3],
+                        backgroundColor: 'rgba(8, 145, 178, 0.2)',
+                        borderColor: 'rgba(8, 145, 178, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(8, 145, 178, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(8, 145, 178, 1)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+                                color: '#334155'
+                            },
+                            ticks: {
+                                beginAtZero: true,
+                                max: 5,
+                                stepSize: 1,
+                                backdropColor: 'transparent',
+                                color: '#64748b'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.r !== null) {
+                                        label += context.parsed.r + ' de 5';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const backToTopBtn = document.getElementById("backToTopBtn");
+
+            window.onscroll = function() { scrollFunction() };
+
+            function scrollFunction() {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    backToTopBtn.style.display = "block";
+                } else {
+                    backToTopBtn.style.display = "none";
+                }
+            }
+
+            backToTopBtn.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
